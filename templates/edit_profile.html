@@ -1,0 +1,244 @@
+{% extends 'basee.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+  /* ================================
+     GENERAL STYLING
+  ================================= */
+  .section-content {
+    padding: 140px 50px 30px 50px;
+    background: #f9f9f9;
+  }
+
+  .containerss {
+    max-width: 1200px;
+    margin: 50px auto;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  /* ================================
+     SIDEBAR
+  ================================= */
+  aside {
+    flex: 0 0 250px;
+    background: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    height: fit-content;
+  }
+
+  aside h3 {
+    margin-bottom: 15px;
+    color: #000;
+  }
+
+  aside ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  aside ul li {
+    margin-bottom: 10px;
+  }
+
+  aside ul li a {
+    text-decoration: none;
+    color: #000;
+    font-weight: 500;
+    transition: 0.3s;
+  }
+
+  aside ul li a.active, aside ul li a:hover {
+    color: #ff6f61;
+  }
+
+  /* ================================
+     MAIN CARD
+  ================================= */
+  main {
+    flex: 1;
+  }
+
+  .card {
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+  }
+
+  .card-header {
+    background: #000;
+    color: #fff;
+    padding: 15px 20px;
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  .card-body {
+    padding: 20px;
+  }
+
+  /* ================================
+     FORM STYLING
+  ================================= */
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  form label {
+    font-weight: 500;
+    margin-bottom: 5px;
+    color: #000;
+  }
+
+  form input, form select, form textarea {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+  }
+
+  form input[type="submit"] {
+    width: fit-content;
+    background: #000;
+    color: #fff;
+    cursor: pointer;
+    transition: 0.3s;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+  }
+
+  form input[type="submit"]:hover {
+    background: #333;
+  }
+
+  .profile-pic-preview {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 20px;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ccc;
+  }
+
+  @media(max-width: 768px){
+    .containerss {
+      flex-direction: column;
+	  margin-top:10px;
+    }
+	.section-content {
+    padding:10px;
+
+}
+    aside {
+      flex: 1;
+    }
+  }
+</style>
+
+<section class="section-content">
+  <div class="containerss">
+
+    <!-- DASHBOARD SIDEBAR -->
+    {% include 'dashboard_sidebar.html' %}
+
+    <!-- MAIN CONTENT -->
+    <main>
+      <article class="card">
+        <header class="card-header">
+          <strong>Edit your profile</strong>
+        </header>
+        <div class="card-body">
+
+          <!-- Profile Picture Preview -->
+          <img id="profilePreview" src="{{ userprofile.profile_picture.url }}" alt="Profile Picture" class="profile-pic-preview">
+
+          <!-- Profile Form -->
+          <form action="{% url 'edit_profile' %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="form-row" style="display:flex; gap: 20px; flex-wrap: wrap;">
+              <div style="flex:1;">
+                <label>First Name</label>
+                {{ user_form.first_name }}
+              </div>
+              <div style="flex:1;">
+                <label>Last Name</label>
+                {{ user_form.last_name }}
+              </div>
+            </div>
+
+            <div class="form-row" style="display:flex; gap: 20px; flex-wrap: wrap;">
+              <div style="flex:1;">
+                <label>Phone Number</label>
+                {{ user_form.phone_number }}
+              </div>
+              <div style="flex:1;">
+                <label>Profile Picture</label>
+                {{ profile_form.profile_picture }}
+              </div>
+            </div>
+
+            <div>
+              <label>Address Line 1</label>
+              {{ profile_form.address_line_1 }}
+            </div>
+
+            <div>
+              <label>Address Line 2</label>
+              {{ profile_form.address_line_2 }}
+            </div>
+
+            <div class="form-row" style="display:flex; gap: 20px; flex-wrap: wrap;">
+              <div style="flex:1;">
+                <label>City</label>
+                {{ profile_form.city }}
+              </div>
+              <div style="flex:1;">
+                <label>State</label>
+                {{ profile_form.state }}
+              </div>
+              <div style="flex:1;">
+                <label>Country</label>
+                {{ profile_form.country }}
+              </div>
+            </div>
+
+            <input type="submit" value="Save">
+
+          </form>
+        </div>
+      </article>
+    </main>
+  </div>
+</section>
+
+<script>
+  // PROFILE PICTURE PREVIEW
+  const profileInput = document.getElementById("id_profile_picture");
+  const profilePreview = document.getElementById("profilePreview");
+
+  if(profileInput){
+    profileInput.addEventListener('change', function(e){
+      const [file] = e.target.files;
+      if(file){
+        profilePreview.src = URL.createObjectURL(file);
+      }
+    });
+  }
+</script>
+
+{% endblock %}

@@ -1,0 +1,317 @@
+{% extends 'basee.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+
+
+.containerS {
+    max-width: 1200px;
+    margin: 120px auto;
+    padding: 30px 20px;
+}
+
+.card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.card-header {
+    font-weight: 600;
+    font-size: 1.1rem;
+    background: #f9fafb;
+    padding: 12px 20px;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+h4.text-center {
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.table-shopping-cart {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+}
+
+.table-shopping-cart th {
+    text-transform: uppercase;
+    font-weight: 500;
+    color: #374151;
+    padding: 10px;
+    font-size: 0.9rem;
+    text-align: left;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.table-shopping-cart td {
+    background: #fff;
+    border-radius: 8px;
+    padding: 12px;
+    vertical-align: middle;
+}
+
+.itemside {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.itemside img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.price-wrap var.price {
+    font-weight: 600;
+    color: #111827;
+}
+
+.price-wrap small {
+    color: #6b7280;
+}
+
+.totals-card {
+    padding: 20px;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+}
+
+.total-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    font-weight: 500;
+    color: #111827;
+}
+
+.total-final {
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.btn {
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+    background: #111827;
+    color: #fff;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: 500;
+    text-decoration: none;
+    margin-top: 15px;
+}
+
+.btn:hover {
+    background: #374151;
+}
+
+.alert-danger {
+    background: #fef2f2;
+    color: #b91c1c;
+    padding: 12px 20px;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+/* ======================
+   Tablet view: single column
+====================== */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .row {
+        flex-direction: column;
+    }
+    .containerS {
+
+    margin: 10px auto;
+}
+
+    .col-lg-8, .col-lg-4 {
+        flex: 1 1 100%;
+        max-width: 100%;
+    }
+
+    .totals-card {
+        margin-top: 20px;
+    }
+
+    .card {
+        width: 100%;
+    }
+}
+
+/* ======================
+   Mobile view
+====================== */
+@media (max-width: 767px) {
+    .containerS {
+        padding: 15px 10px;
+    }
+
+    .card-body {
+        padding: 15px;
+    }
+
+    .table-shopping-cart th, .table-shopping-cart td {
+        padding: 8px;
+    }
+
+    .itemside img {
+        width: 60px;
+        height: 60px;
+    }
+
+    .btn {
+        padding: 10px;
+    }
+}
+</style>
+
+<div class="containerS">
+
+    <h4 class="text-center">Review Your Order and Make Payment</h4>
+
+    <div class="row d-flex">
+
+        <!-- Left Column: Billing + Payment + Products -->
+        <aside class="col-lg-8">
+            <!-- Billing Address -->
+            <div class="card">
+                <div class="card-header">Billing Address</div>
+                <div class="card-body">
+                    <p>{{ order.full_name }}</p>
+                    <p>{{ order.full_address }}</p>
+                    <p>{{ order.city }}, {{ order.state }}</p>
+                    <p>{{ order.country }}</p>
+                    <p>{{ order.email }}</p>
+                    <p>{{ order.phone }}</p>
+                    {% if order.order_note %}
+                        <p><b>Note:</b> {{ order.order_note }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Payment Method -->
+            <div class="card">
+                <div class="card-header">Payment Method</div>
+                <div class="card-body">
+                    <p>PayPal</p>
+                </div>
+            </div>
+
+            <!-- Products Review -->
+            <div class="card">
+                <div class="card-header">Review Products</div>
+                <div class="card-body">
+                    <table class="table table-shopping-cart">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for cart_item in cart_items %}
+                            <tr>
+                                <td>
+                                    <div class="itemside">
+                                        <img src="{{ cart_item.product.image.url }}" alt="{{ cart_item.product.product_name }}">
+                                        <div>
+                                            <p>{{ cart_item.product.product_name }}</p>
+                                            {% if cart_item.variations.all %}
+                                            <small>
+                                                {% for var in cart_item.variations.all %}
+                                                    {{ var.variation_category|capfirst }}: {{ var.variation_value|capfirst }}{% if not forloop.last %}, {% endif %}
+                                                {% endfor %}
+                                            </small>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>{{ cart_item.quantity }}</td>
+                                <td>
+                                    <div class="price-wrap">
+                                        <var class="price">${{ cart_item.sub_total }}</var><br>
+                                        <small>${{ cart_item.product.price }} each</small>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Right Column: Totals -->
+        <aside class="col-lg-4">
+            <div class="totals-card">
+                <h5>Order Summary</h5>
+                <div class="total-row"><span>Subtotal:</span><span>${{ total }}</span></div>
+                <div class="total-row"><span>Tax:</span><span>${{ tax }}</span></div>
+                <div class="total-row total-final"><span>Total:</span><span>${{ grand_total }}</span></div>
+                <button id="rzp-button1" class="btn">Pay</button>
+            </div>
+            <div class="alert alert-danger">
+                <b>Note:</b> This is a demo website. Do not try to make real payments.
+            </div>
+        </aside>
+
+    </div>
+</div>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+var options = {
+    "key": "{{ razorpay_merchant_key }}",
+    "amount": "{{ grand_total|floatformat:2 }}00",
+    "currency": "{{ currency }}",
+    "name": "My Django Store",
+    "description": "Order Payment",
+    "order_id": "{{ razorpay_order_id }}",
+    "handler": function(response){
+        fetch("{% url 'razorpay_payment' %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": "{{ csrf_token }}"
+            },
+            body: JSON.stringify({
+                "razorpay_payment_id": response.razorpay_payment_id,
+                "razorpay_order_id": response.razorpay_order_id,
+                "razorpay_signature": response.razorpay_signature,
+                "order_number": "{{ order.order_number }}"
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.status == "success"){
+                window.location.href = "{% url 'order_complete' %}?order_number=" + data.order_number + "&payment_id=" + data.payment_id;
+            } else {
+                alert("Payment verification failed!");
+            }
+        })
+    },
+    "theme": {"color": "#111827"}
+};
+var rzp1 = new Razorpay(options);
+document.getElementById("rzp-button1").onclick = function(e){
+    rzp1.open();
+    e.preventDefault();
+}
+</script>
+
+{% endblock %}

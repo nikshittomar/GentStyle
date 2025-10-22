@@ -1,0 +1,216 @@
+{% extends 'basee.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+  .bg-img1 {
+    background-size: cover;
+    background-position: center;
+    padding: 100px 15px;
+    text-align: center;
+    margin-top: 100px;
+  }
+
+  .bg-img1 h2 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    color: #fff;
+    font-size: 48px;
+    margin: 0;
+  }
+
+  /* Contact Section */
+  .contact-section {
+    padding: 80px 150px;
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    gap: 30px;
+    flex-wrap: wrap;
+  }
+
+  .contact-form, .contact-info {
+    background: #fff;
+    border-radius: 10px;
+    padding: 50px;
+    flex: 1 1 45%;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    box-sizing: border-box;
+  }
+
+  .contact-form h4 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 28px;
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .contact-form input,
+  .contact-form textarea {
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    outline: none;
+  }
+
+  .contact-form button {
+    background: #333;
+    color: #fff;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: 0.3s;
+    width: 100%;
+  }
+
+  .contact-form button:hover {
+    background: #555;
+  }
+
+  .contact-info .info-block {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 30px;
+  }
+
+  .contact-info .info-block span {
+    font-size: 24px;
+    margin-right: 20px;
+    color: #333;
+  }
+
+  .contact-info .info-block div span {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 18px;
+    display: block;
+    color: #222;
+  }
+
+  .contact-info .info-block div p {
+    margin: 5px 0 0 0;
+    font-size: 14px;
+    color: #555;
+  }
+
+  /* Map Section */
+  .map {
+    width: 100%;
+    height: 400px;
+    border: none;
+  }
+
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .contact-section {
+      padding: 60px 50px;
+      flex-direction: column;
+    }
+    .contact-form, .contact-info {
+      width: 100%;
+      margin: 0;
+    }
+    .bg-img1 {
+      margin-top: 0;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .contact-section {
+      padding: 40px 20px;
+    }
+    .contact-form, .contact-info {
+      padding: 30px 25px;
+    }
+    .bg-img1 h2 {
+      font-size: 32px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .contact-form h4 {
+      font-size: 22px;
+    }
+    .contact-form input,
+    .contact-form textarea {
+      padding: 12px;
+      font-size: 13px;
+    }
+    .contact-form button {
+      font-size: 14px;
+      padding: 12px;
+    }
+  }
+</style>
+
+<body>
+
+<section class="bg-img1" style="background-image: url('{% static 'images/bg-01.jpg' %}');">
+  <h2>Contact</h2>
+</section>
+
+<!-- Contact Content -->
+<section class="contact-section">
+  <!-- Form -->
+  <div class="contact-form">
+    <h4>Send Us A Message</h4>
+    <form id="contactForm" method="POST" action="">
+      {% csrf_token %}
+      {% if messages %}
+        <div style="margin-bottom:10px;">
+          {% for message in messages %}
+            <div style="color: {% if message.tags == 'success' %}green{% else %}red{% endif %}; text-align:center;">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+      <input type="email" name="email" placeholder="Your Email Address" required>
+      <textarea name="msg" rows="6" placeholder="How Can We Help?" required></textarea>
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+
+  <!-- Info -->
+  <div class="contact-info">
+    <div class="info-block">
+      <span>📍</span>
+      <div>
+        <span>Address</span>
+        <p>Coza Store Center 8th floor, 379 Hudson St, New York, NY 10018 US</p>
+      </div>
+    </div>
+
+    <div class="info-block">
+      <span>📞</span>
+      <div>
+        <span>Let's Talk</span>
+        <p>+1 800 1236879</p>
+      </div>
+    </div>
+
+    <div class="info-block">
+      <span>✉️</span>
+      <div>
+        <span>Sale Support</span>
+        <p>contact@example.com</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Google Map -->
+<iframe class="map"
+  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3332.077466994413!2d77.2315127752848!3d28.523839975724353!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390ce19bc4c08049%3A0xd728b85afeaa8784!2sJ.J.%20Tailors!5e1!3m2!1sen!2sin!4v1759166242570!5m2!1sen!2sin"
+  allowfullscreen=""
+  loading="lazy"
+  referrerpolicy="no-referrer-when-downgrade"></iframe>
+
+{% endblock %}

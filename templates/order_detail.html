@@ -1,0 +1,247 @@
+{% extends 'basee.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #fff; /* reversed */
+    color: #000;
+    margin: 0;
+    padding: 0;
+  }
+
+  .invoice-container {
+    background-color: #f9f9f9; /* lighter invoice bg */
+    width: 90%;
+    max-width: 900px;
+    margin: 50px auto;
+    padding: 40px 30px;
+    border-radius: 12px;
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.08);
+  }
+
+  .invoice-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    border-bottom: 2px solid #000;
+    padding-bottom: 15px;
+  }
+
+  .invoice-header img {
+    max-height: 45px;
+    filter: none; /* remove inversion */
+  }
+
+  .invoice-to {
+    text-align: right;
+  }
+
+  .invoice-to strong {
+    display: block;
+    margin-bottom: 5px;
+    color: #007bff; /* primary accent */
+  }
+
+  .invoice-details {
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 25px;
+  }
+
+  .invoice-details ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .invoice-details li {
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+    color: #333;
+  }
+
+  .invoice-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 30px;
+  }
+
+  .invoice-table th,
+  .invoice-table td {
+    border: 1px solid #000;
+    padding: 12px;
+    text-align: center;
+  }
+
+  .invoice-table th {
+    background-color: #ffffffff;
+    color: #000000ff;
+    font-weight: 600;
+  }
+
+  .invoice-table td {
+    background-color: #fff;
+  }
+
+  .invoice-table tfoot th {
+    background-color: #ffffffff;
+    color: #000000ff;
+  }
+
+  .invoice-footer {
+    text-align: center;
+    margin-top: 40px;
+    font-size: 1rem;
+    color: #555;
+  }
+
+  /* Success Message Section */
+  .success-section {
+    text-align: center;
+    padding: 50px 20px;
+    margin-top: 40px;
+  }
+
+  .success-section i {
+    font-size: 80px;
+    color: #28a745;
+    margin-bottom: 20px;
+  }
+
+  .success-section h2 {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+
+  .btn-shop {
+    display: inline-block;
+    background: #000;
+    color: #fff;
+    padding: 12px 30px;
+    border-radius: 6px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+
+  .btn-shop:hover {
+    background: #28a745;
+    color: #fff;
+  }
+
+  @media (max-width: 768px) {
+    .invoice-header {
+      flex-direction: column;
+      text-align: center;
+    }
+     .success-section {
+    text-align: center;
+    padding: 10px
+
+  }
+
+    .invoice-to {
+      text-align: center;
+      margin-top: 15px;
+    }
+
+    .invoice-container {
+      padding: 25px 15px;
+    }
+
+    .invoice-table th,
+    .invoice-table td {
+      font-size: 0.9rem;
+      padding: 8px;
+    }
+  }
+</style>
+
+<!-- ✅ Payment Success -->
+<section class="success-section">
+  <i class="fas fa-check-circle"></i>
+  <h2>Payment Successful</h2>
+  <a href="{% url 'store' %}" class="btn-shop">Shop More</a>
+</section>
+
+<!-- ✅ Invoice Section -->
+<div class="invoice-container">
+  <div class="invoice-header">
+    <div class="invoice-logo">
+      <img src="{% static 'images/icons/logo-01.png' %}" alt="Invoice Logo">
+    </div>
+    <div class="invoice-to">
+      <strong>Invoiced To</strong>
+      <p>{{ order.full_name }}</p>
+      <p>{{ order.full_address }}</p>
+      <p>{{ order.city }}, {{ order.state }}</p>
+      <p>{{ order.country }}</p>
+    </div>
+  </div>
+
+  <div class="invoice-details">
+    <ul>
+      <li><strong>Order #:</strong> {{ order.order_number }}</li>
+      <li><strong>Transaction ID:</strong> {{ order.payment.payment_id }}</li>
+      <li><strong>Order Date:</strong> {{ order.created_at }}</li>
+      <li><strong>Status:</strong> {{ order.payment.status }}</li>
+    </ul>
+  </div>
+
+  <table class="invoice-table">
+    <thead>
+      <tr>
+        <th>Products</th>
+        <th>Qty</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in order_detail %}
+      <tr>
+        <td>
+          {{ item.product.product_name }}
+          <p class="text-muted small">
+            {% if item.variations.all %}
+              {% for i in item.variations.all %}
+                {{ i.variation_category|capfirst }} : {{ i.variation_value|capfirst }} <br>
+              {% endfor %}
+            {% endif %}
+          </p>
+        </td>
+        <td>{{ item.quantity }}</td>
+        <td class="text-center">
+    ${{ item.product_price|floatformat:2 }} × {{ item.quantity }} = ${{ item.total_price|floatformat:2 }} USD
+</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+    <tfoot>
+      <tr>
+        <th colspan="2" class="text-right">Sub Total:</th>
+        <th>${{ subtotal|floatformat:2 }} USD</th>
+      </tr>
+      <tr>
+        <th colspan="2" class="text-right">Tax:</th>
+        <th>${{ order.tax|floatformat:2 }} USD</th>
+      </tr>
+      <tr>
+        <th colspan="2" class="text-right">Grand Total:</th>
+        <th>${{ order.order_total|floatformat:2 }} USD</th>
+      </tr>
+    </tfoot>
+  </table>
+
+  <div class="invoice-footer">
+    <p>Thank you for shopping with us!</p>
+  </div>
+</div>
+
+{% endblock %}

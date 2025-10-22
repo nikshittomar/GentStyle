@@ -1,0 +1,213 @@
+{% extends 'basee.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: #f5f5f5;
+  }
+
+  .section-content {
+    padding: 100px 20px 50px 20px;
+  }
+
+  .containerss {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  /* SIDEBAR */
+  aside {
+    flex: 0 0 250px;
+    background: #ffffff;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    height: fit-content;
+  }
+
+  aside h3 {
+    margin-bottom: 20px;
+    color: #333;
+    font-weight: 600;
+  }
+
+  aside ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  aside ul li {
+    margin-bottom: 12px;
+  }
+
+  aside ul li a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    transition: 0.3s;
+  }
+
+  aside ul li a.active,
+  aside ul li a:hover {
+    color: #1e88e5;
+  }
+
+  /* MAIN CARD */
+  main {
+    flex: 1;
+  }
+
+  .card {
+    background: #fff;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    margin-bottom: 30px;
+  }
+
+  .card-header {
+    background: #030303ff;
+    color: #fff;
+    padding: 20px;
+    font-size: 18px;
+    font-weight: 600;
+    text-align: center;
+  }
+
+  .card-body {
+    padding: 20px;
+  }
+
+  /* TABLE */
+  .table-responsive {
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 500px;
+  }
+
+  table th, table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+  }
+
+  table thead th {
+    background: #000000ff;
+    color: #fff;
+    font-weight: 600;
+  }
+
+  table tbody tr:hover {
+    background: rgba(30, 136, 229, 0.05);
+  }
+
+  table a {
+    color: #e5881eff;
+    text-decoration: none;
+  }
+
+  table a:hover {
+    text-decoration: underline;
+  }
+
+  /* RESPONSIVE */
+  @media(max-width: 992px){
+    .containerss {
+      flex-direction: column;
+    }
+
+    aside {
+      width: 100%;
+      margin-bottom: 20px;
+    }
+
+    main {
+      width: 100%;
+    }
+  }
+
+  @media(max-width: 768px){
+    .section-content {
+      padding: 20px 10px;
+    }
+
+    table {
+      min-width: unset;
+      font-size: 13px;
+    }
+
+    table th, table td {
+      padding: 10px;
+    }
+  }
+
+  @media(max-width: 480px){
+    table {
+      font-size: 12px;
+    }
+
+    table th, table td {
+      padding: 8px;
+    }
+  }
+</style>
+
+<section class="section-content">
+  <div class="containerss">
+
+    <!-- DASHBOARD SIDEBAR -->
+    {% include 'dashboard_sidebar.html' %}
+
+    <!-- MAIN CONTENT -->
+    <main>
+      <article class="card">
+        <header class="card-header">
+          Your Order History
+        </header>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>Order #</th>
+                  <th>Billing Name</th>
+                  <th>Phone</th>
+                  <th>Order Total</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for order in orders %}
+                <tr>
+                  <td><a href="{% url 'order_detail' order.order_number %}">{{ order.order_number }}</a></td>
+                  <td>{{ order.full_name }}</td>
+                  <td>{{ order.phone }}</td>
+                  <td>${{ order.order_total }}</td>
+                  <td>{{ order.created_at }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="5" style="text-align:center;">No orders found.</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </article>
+    </main>
+
+  </div>
+</section>
+
+{% endblock %}

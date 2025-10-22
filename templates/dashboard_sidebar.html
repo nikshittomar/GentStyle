@@ -1,0 +1,92 @@
+<aside class="dashboard-sidebar">
+  <ul class="sidebar-menu">
+    <li>
+      <a class="{% if '/accounts/' == request.path %}active{% endif %}" href="{% url 'dashboard' %}">
+        <i class="fa fa-tachometer-alt"></i> Dashboard
+      </a>
+    </li>
+    <li>
+      <a class="{% if '/my_orders/' in request.path %}active{% endif %}" href="{% url 'my_orders' %}">
+        <i class="fa fa-shopping-cart"></i> My Orders
+      </a>
+    </li>
+    <li>
+      <a class="{% if '/edit_profile/' in request.path %}active{% endif %}" href="{% url 'edit_profile' %}">
+        <i class="fa fa-user-edit"></i> Edit Profile
+      </a>
+    </li>
+    <li>
+      <a class="{% if '/change_password/' in request.path %}active{% endif %}" href="{% url 'change_password' %}">
+        <i class="fa fa-lock"></i> Change Password
+      </a>
+    </li>
+  </ul>
+
+  <a class="btn-logout" href="{% url 'logout' %}">
+    <i class="fa fa-power-off"></i> Log Out
+  </a>
+</aside>
+
+<style>
+.dashboard-sidebar {
+  background: #e1dfdf3d;
+  padding: 20px;
+  border-radius: 10px;
+  color: #060606ff;
+  min-width: 220px;
+}
+
+.sidebar-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px 0;
+}
+
+.sidebar-menu li {
+  margin-bottom: 10px;
+}
+
+.sidebar-menu li a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 15px;
+  color: #000000ff;
+  font-weight: 500;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.sidebar-menu li a i {
+  font-size: 16px;
+}
+
+.sidebar-menu li a:hover,
+.sidebar-menu li a.active {
+  background: #fff;
+  color: #000;
+}
+
+.btn-logout {
+  display: block;
+  width: 100%;
+  text-align: center;
+  padding: 10px 0;
+  background: #000000ff;
+  color: #ffffffff;
+  border-radius: 8px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.btn-logout i {
+  margin-right: 5px;
+}
+
+.btn-logout:hover {
+  background: #333;
+  color: #fff;
+}
+</style>

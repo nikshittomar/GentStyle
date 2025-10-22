@@ -1,0 +1,186 @@
+{% extends 'basee.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+  .login-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 80vh; 
+    padding: 40px 20px;
+  }
+
+  .login-card {
+    width: 100%;
+    max-width: 400px;
+    background: rgba(237, 228, 228, 0.05);
+    border: 2px solid rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(15px);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 0 20px rgba(255,255,255,0.1);
+    text-align: center;
+    transition: all 0.3s ease;
+    margin-top: 120px;
+  }
+
+  .login-card:hover {
+    box-shadow: 0 0 30px rgba(255,255,255,0.3);
+    transform: translateY(-3px);
+  }
+
+  .login-card h2 {
+    font-weight: 700;
+    margin-bottom: 25px;
+    letter-spacing: 1px;
+    color: #000;
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+    text-align: left;
+    position: relative;
+  }
+
+  .form-control {
+    width: 100%;
+    padding: 12px 45px 12px 15px; /* space for eye icon */
+    border-radius: 25px;
+    border: 2px solid #000;
+    background: transparent;
+    color: #000;
+    font-size: 15px;
+    outline: none;
+    transition: 0.3s ease;
+  }
+
+  .form-control:focus {
+    border-color: #555;
+    background: rgba(0,0,0,0.05);
+  }
+
+  .btn {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 25px;
+    background: #000;
+    color: #fff;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.3s ease;
+  }
+
+  .btn:hover {
+    background: #fff;
+    color: #000;
+    border: 2px solid #000;
+  }
+
+  .forgot {
+    display: block;
+    text-align: right;
+    margin-bottom: 20px;
+    color: #555;
+    text-decoration: none;
+    font-size: 14px;
+    transition: 0.3s;
+  }
+
+  .forgot:hover {
+    color: #000;
+    text-decoration: underline;
+  }
+
+  .signup {
+    margin-top: 20px;
+    color: #333;
+    font-size: 14px;
+  }
+
+  .signup a {
+    color: #000;
+    font-weight: 600;
+    text-decoration: none;
+    transition: 0.3s;
+  }
+
+  .signup a:hover {
+    text-decoration: underline;
+  }
+
+  /* Eye icon for password toggle */
+  .toggle-password {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #888;
+    font-size: 16px;
+  }
+
+  .toggle-password:hover {
+    color: #333;
+  }
+
+  @media (max-width: 768px) {
+    .login-card { padding: 30px 20px; margin-top: 5px; }
+  }
+
+  @media (max-width: 480px) {
+    .login-card { padding: 30px 20px; margin-top: 5px; }
+    .login-card h2 { font-size: 22px; }
+  }
+</style>
+
+{% if request.GET.command == 'verification' %}
+<div class="container alert alert-info card mx-auto text-center" style="max-width: 400px; margin-top: 120px;">
+  <p>Thank you for registering with us. We’ve sent a verification email to your address:
+    <strong>{{ request.GET.email }}</strong>
+  </p>
+  <p>Already verified? <a href="{% url 'login' %}">Login</a></p>
+</div>
+{% else %}
+
+<div class="login-wrapper">
+  <div class="login-card">
+    <h2>Login</h2>
+
+    <form action="{% url 'login' %}" method="POST" id="loginForm">
+      {% csrf_token %}
+      <div class="form-group">
+        <input type="email" class="form-control" placeholder="Email Address" name="email" required>
+      </div>
+      <div class="form-group">
+        <input type="password" class="form-control" id="password" placeholder="Password" name="password" required>
+        <i class="fa-solid fa-eye toggle-password" onclick="togglePassword('password', this)"></i>
+      </div>
+
+      <a href="{% url 'forgotpassword' %}" class="forgot">Forgot password?</a>
+
+      <button type="submit" class="btn">Login</button>
+    </form>
+    <p class="signup">Don't have an account? <a href="{% url 'register' %}">Sign up</a></p>
+  </div>
+</div>
+
+{% endif %}
+
+<!-- Font Awesome for eye icon -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+<script>
+  function togglePassword(id, icon) {
+    const field = document.getElementById(id);
+    if (field.type === "password") {
+      field.type = "text";
+      icon.classList.replace("fa-eye", "fa-eye-slash");
+    } else {
+      field.type = "password";
+      icon.classList.replace("fa-eye-slash", "fa-eye");
+    }
+  }
+</script>
+
+{% endblock %}
