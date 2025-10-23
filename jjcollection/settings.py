@@ -17,7 +17,7 @@ SECRET_KEY='django-insecure-fc2_ux=1ds1_gu6c9r08-kzzcaqha%cef&_2lic6s^ngqr4x%('
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = []
 
 
 
