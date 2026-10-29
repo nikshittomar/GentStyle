@@ -6,226 +6,359 @@
 .product-detail-section {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 130px 20px;
+  padding: 120px 20px 0 20px;
   display: flex;
   gap: 20px;
-  flex-wrap: nowrap;
 }
 
-/* Product Images */
-.product-images {
-  width: 69%;
-  position: relative;
-}
+.product-images { width: 36%; }
 .product-images img {
-  width: 100%;
+  width: 80%;
+  margin: 60px;
   border-radius: 10px;
-  object-fit: contain;
-  display: block;
-}
-.product-images a.expand-btn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: rgba(0,0,0,0.7);
-  color: #fff;
-  padding: 6px 10px;
-  border-radius: 5px;
-  font-size: 16px;
-  text-decoration: none;
 }
 
-/* Product Info */
 .product-info {
-  width: 31%;
+   width: 50%;
+   padding-top:50px;
+   }
+
+.price {
+   font-size: 22px; 
+   font-weight: bold;
+  padding-top:10px; }
+.price p{
+   padding-top:10px;
+}
+.product-grid {
   display: flex;
-  flex-direction: column;
   gap: 20px;
-  font-family: 'PlayfairDisplay-Bold';
-}
-.product-info h1 {
-  font-size: 28px;
-  margin: 0;
-  color: #333;
-}
-.product-info .price {
-  font-size: 22px;
-  color: #444;
-  font-weight: bold;
-}
-.product-info p.description {
-  color: #555;
-  line-height: 1.5;
-}
-
-/* === Size + Add to Cart Styling === */
-.cart-form {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.size-section label {
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 8px;
-  display: block;
-}
-
-.size-select-container {
-  display: flex;
-  align-items: center;
-  gap: 12px;
   flex-wrap: wrap;
+  padding-top:10px;
 }
 
-.size-select {
-  padding: 10px 14px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  font-size: 15px;
-  flex: 1;
-  min-width: 150px;
-  transition: border-color 0.3s;
-}
-.size-select:focus {
-  border-color: #333;
-  outline: none;
+.product-card {
+  width: 200px;
+  border: 1px solid #eee;
+  padding: 10px;
+  border-radius: 10px;
+  text-align: center;
 }
 
-.size-chart-btn {
-  background: #f5f5f5;
-  color: #333;
-  padding: 10px 16px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  font-size: 14px;
-  text-decoration: none;
-  transition: 0.3s;
-}
-.size-chart-btn:hover {
-  background: #333;
-  color: #fff;
-  border-color: #333;
+.recommend-section {
+  max-width: 1200px;
+  margin: 20px 200px ;
 }
 
-/* Add to Cart Button */
-.cart-actions {
-  display: flex;
-  justify-content: flex-start;
-}
-.add-to-cart {
-  padding: 12px 28px;
-  background: #222;
-  color: #fff;
-  font-size: 16px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: 0.3s;
-}
-.add-to-cart:hover {
-  background: #444;
-}
-.car {
-  margin-right: 8px;
+button {
+  
+    background-color: #222;   /* dark theme */
+    color: #fff;
+    border: none;
+    padding: 8px 18px;       /* smaller size */
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 6px;      /* subtle curve */
+    cursor: pointer;
+    transition: all 0.25s ease;
 }
 
-/* Social Links */
-.social {
-  display: flex;
-  gap: 15px;
-  margin-top: 15px;
-  flex-wrap: wrap;
-}
-.social a {
-  color: #333;
-  font-size: 18px;
-  text-decoration: none;
-  transition: 0.3s;
-}
-.social a:hover {
-  color: #007bff;
+button:hover {
+    background-color: #ff6a00;  /* accent color on hover */
+    color: #fff;
 }
 
-/* Tablet */
+button:active {
+    transform: scale(0.96);
+}
+form{
+  padding-top:10px;
+
+}
+select {
+    padding: 8px 14px;
+    font-size: 14px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    color: #333;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.25s ease;
+}
+
+/* Hover effect */
+select:hover {
+    border-color: #999;
+}
+
+/* Focus (when clicked) */
+select:focus {
+    border-color: #ff6a00;   /* same accent as button hover */
+    box-shadow: 0 0 5px rgba(255, 106, 0, 0.3);
+}
+
+/* Disabled option style */
+select option:disabled {
+    color: #aaa;
+}
+/* ================= RESPONSIVE DESIGN ================= */
+
+/* Tablet View */
 @media (max-width: 992px) {
-  .product-detail-section {
-    flex-direction: row;
-    gap: 20px;
-  }
-  .product-images {
-    width: 69%;
-  }
-  .product-info {
-    width: 31%;
-  }
-}
 
-/* Mobile */
-@media (max-width: 768px) {
   .product-detail-section {
     flex-direction: column;
-    gap: 20px;
-    padding: 20px;
+    align-items: center;
+    padding: 100px 20px 20px;
   }
-  .product-images {
-    width: 100%;
-  }
+
+  .product-images,
   .product-info {
     width: 100%;
   }
+
+  .product-images img {
+    width: 70%;
+    margin: 20px auto;
+    display: block;
+  }
+
+  .product-info {
+    padding-top: 10px;
+    text-align: center;
+  }
+
+  .recommend-section {
+    margin: 20px;
+  }
+
+  .product-grid {
+    justify-content: center;
+  }
+
+  .product-card {
+    width: 180px;
+  }
+}
+
+/* Mobile View */
+@media (max-width: 768px) {
+
+  .product-detail-section {
+    flex-direction: column;
+    padding: 80px 15px 20px;
+    gap: 10px;
+  }
+
+  .product-images,
+  .product-info {
+    width: 100%;
+  }
+
+  .product-images img {
+    width: 100%;
+    max-width: 320px;
+    margin: 0 auto;
+    display: block;
+    border-radius: 12px;
+  }
+
+  .product-info {
+    padding-top: 20px;
+    text-align: center;
+  }
+
+  .product-info h1 {
+    font-size: 24px;
+  }
+
+  .price {
+    font-size: 20px;
+  }
+
+  .product-info p {
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+  }
+
+  select {
+    width: 100%;
+    max-width: 250px;
+  }
+
+  button {
+    width: 100%;
+    max-width: 250px;
+    padding: 12px;
+  }
+
+  .recommend-section {
+    margin: 30px 15px;
+  }
+
+  .recommend-section h2 {
+    text-align: center;
+    font-size: 22px;
+  }
+
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+
+  .product-card {
+    width: 100%;
+    padding: 8px;
+  }
+
+  .product-card img {
+    height: 160px !important;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+
+  .product-card p {
+    font-size: 14px;
+    margin: 6px 0;
+  }
+}
+
+/* Small Mobile Devices */
+@media (max-width: 480px) {
+
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .product-info h1 {
+    font-size: 20px;
+  }
+
+  .price {
+    font-size: 18px;
+  }
+
+  .product-card img {
+    height: 140px !important;
+  }
+
+  .recommend-section h2 {
+    font-size: 20px;
+  }
+}
+.virtual-tryon-btn {
+    display: inline-block;
+    margin: 10px 0;
+    padding: 12px 20px;
+    background: #6c47ff;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 600;
+    text-align: center;
+    transition: background 0.2s ease;
+}
+
+.virtual-tryon-btn:hover {
+    background: #5030d4;
+    color: white;
 }
 </style>
 
+<!-- ================= PRODUCT ================= -->
 <section class="product-detail-section">
 
-  <!-- Product Image -->
   <div class="product-images">
-    <img src="{{ single_product.image.url }}" alt="{{ single_product.product_name }}">
-    <a href="{{ single_product.image.url }}" class="expand-btn"><i class="fa fa-expand"></i></a>
+    <img src="{{ single_product.image.url }}">
   </div>
 
-  <!-- Product Info -->
   <div class="product-info">
     <h1>{{ single_product.product_name }}</h1>
     <div class="price">₹{{ single_product.price }}</div>
-    <p class="description">{{ single_product.product_description }}</p>
+    <p>{{ single_product.product_description }}</p>
 
-    <!-- Add to Cart Form -->
-    <form method="POST" action="{% url 'add_cart' single_product.id %}" class="cart-form">
+    <form method="POST" action="{% url 'add_cart' single_product.id %}">
       {% csrf_token %}
 
-      <div class="size-section">
-        <label for="size">Select Size</label>
-        <div class="size-select-container">
-          <select id="size" name="size" class="size-select" required>
-            <option value="" disabled selected>Select Your Size</option>
-            {% for size in sizes %}
-              {% if size.is_active %}
-                <option value="{{ size.id }}">{{ size.size_value }}</option>
-              {% endif %}
-            {% endfor %}
-          </select>
-          <a href="{% url 'sizechart' %}" class="size-chart-btn">View Size Chart</a>
-        </div>
-      </div>
+      <select name="size" required>
+        <option disabled selected>Select Size</option>
+        {% for size in sizes %}
+          {% if size.is_active %}
+            <option value="{{ size.id }}">{{ size.size_value }}</option>
+          {% endif %}
+        {% endfor %}
+      </select>
 
-      <div class="cart-actions">
-        <button type="submit" class="add-to-cart">
-          <i class="fa fa-shopping-cart car"></i> Add to Cart
-        </button>
-      </div>
+      <button type="submit">Add to Cart</button>
+      <a href="{% url 'virtual_tryon' single_product.id %}"
+   class="virtual-tryon-btn">
+    👕 Virtual Try-On
+</a>
+<a href="https://huggingface.co/spaces/Kwai-Kolors/Kolors-Virtual-Try-On"
+   target="_blank"
+   rel="noopener noreferrer"
+   style="
+       display: inline-block;
+       background-color: #FFD700;
+       color: #000000;
+       padding: 10px 20px;
+       margin-left: 10px;
+       border-radius: 5px;
+       text-decoration: none;
+       font-weight: bold;
+   ">
+    Kolors
+</a>
     </form>
-
-    <!-- Social Icons -->
-    <div class="social">
-      <a href="#" title="Add to Wishlist"><i class="fa-regular fa-heart"></i></a>
-      <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" target="_blank" title="Facebook"><i class="fa-brands fa-facebook"></i></a>
-      <a href="https://www.instagram.com/" target="_blank" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
-    </div>
   </div>
 
+</section>
+
+<!-- ================= RECOMMENDED ================= -->
+<section class="recommend-section">
+  <h2>Recommended for You</h2>
+
+  <div class="product-grid">
+    {% for product in recommended_products %}
+      <div class="product-card">
+        <a href="{{ product.get_url }}">
+          <img src="{{ product.image.url }}" style="width:100%; height:200px;">
+        </a>
+        <p>{{ product.product_name }}</p>
+        <p>₹{{ product.price }}</p>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- ================= FREQUENTLY BOUGHT ================= -->
+
+
+<!-- ================= SIMILAR ================= -->
+<section class="recommend-section">
+  <h2>Similar Products</h2>
+
+  <div class="product-grid">
+    {% for product in similar_products %}
+      <div class="product-card">
+        <a href="{{ product.get_url }}">
+          <img src="{{ product.image.url }}" style="width:100%; height:200px;">
+        </a>
+        <p>{{ product.product_name }}</p>
+        <p>₹{{ product.price }}</p>
+      </div>
+    {% endfor %}
+  </div>
 </section>
 
 {% endblock %}

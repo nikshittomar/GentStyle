@@ -3,7 +3,10 @@ from .models import Product, ReviewRating, ProductGallery
 from Category.models import Category,SubCategory
 from Carts.models import CartItem
 from django.db.models import Q
-
+from django.db.models import Count
+import tensorflow as tf
+import os
+from .models import Interaction   # make sure you created this model    
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import ContactMessage
@@ -100,145 +103,263 @@ def sizechart(request):
 
     return render(request, "sizechart.html", context)
 
+model = None
+
+try:
+    model = tf.saved_model.load("recommender/model")
+    print("AI Model Loaded Successfully")
+except:
+    print("AI Model not found, using fallback recommendations")
+
+
+# ================= SIZE CHART =================
+def sizechart(request):
+    sizes = {
+        "Coat": [
+            {"Size":"XS","Chest":"34","Shoulder":"17","Sleeve":"23","Length":"27"},
+            {"Size":"S","Chest":"36","Shoulder":"17.5","Sleeve":"24","Length":"28"},
+            {"Size":"M","Chest":"38","Shoulder":"18","Sleeve":"24.5","Length":"29"},
+        ],
+        "Pant": [
+            {"Size":"S","Waist":"30","Hip":"36","Inseam":"29","Length":"40"},
+            {"Size":"M","Waist":"32","Hip":"38","Inseam":"30","Length":"41"},
+            {"Size":"L","Waist":"34","Hip":"40","Inseam":"31","Length":"42"},
+        ],
+    }
+
+    return render(request, "sizechart.html", {"sizes": sizes})
+
+
+# ================= STORE =================
 def store(request, category_slug=None, subcategory_slug=None):
+
     products = Product.objects.filter(is_available=True)
     links = Category.objects.prefetch_related('subcategories').all()
 
-    # Filter by category
     if category_slug:
         category = get_object_or_404(Category, slug=category_slug)
         subcats = SubCategory.objects.filter(category=category)
         products = products.filter(category=category) | products.filter(sub_category__in=subcats)
 
-    # Filter by subcategory
     if subcategory_slug:
         subcategory = get_object_or_404(SubCategory, slug=subcategory_slug)
         products = products.filter(sub_category=subcategory)
 
-    # ✅ Add pagination here (3 products per page, change if needed)
     paginator = Paginator(products, 8)
     page = request.GET.get('page')
     paged_products = paginator.get_page(page)
-    product_count = products.count()
 
     context = {
-        'links': links,
-        'product': paged_products,
-        'product_count': product_count,
+        "links": links,
+        "product": paged_products,
+        "product_count": products.count(),
     }
-    return render(request, 'store.html', context)
 
+    return render(request, "store.html", context)
+
+
+# ================= PRODUCT DETAIL =================
 def product_detail(request, category_slug, product_slug, subcategory_slug=None):
+
     try:
-        if subcategory_slug:  
-            # Product under subcategory
+        if subcategory_slug:
             single_product = Product.objects.get(
                 category__slug=category_slug,
-                subcategory__slug=subcategory_slug,
+                sub_category__slug=subcategory_slug,
                 slug=product_slug
             )
-        else:  
-            # Product directly under main category
+        else:
             single_product = Product.objects.get(
                 category__slug=category_slug,
                 slug=product_slug
             )
 
         in_cart = CartItem.objects.filter(
-            cart__cart_id=_cart_id(request), 
+            cart__cart_id=_cart_id(request),
             product=single_product
         ).exists()
-    except Product.DoesNotExist:
-        single_product = None
-        in_cart = False
 
-    # Check if the user has ordered this product before
+    except Product.DoesNotExist:
+        return render(request, "404.html")
+
+    # ================= USER INTERACTION =================
+    if request.user.is_authenticated:
+        Interaction.objects.create(
+            user=request.user,
+            product=single_product,
+            action="view"
+        )
+
+    # ================= ORDER CHECK =================
+    orderproduct = None
     if request.user.is_authenticated:
         orderproduct = OrderProduct.objects.filter(
-            user=request.user, 
+            user=request.user,
             product_id=single_product.id
         ).exists()
-    else:
-        orderproduct = None
 
-    # Get the reviews
-    reviews = ReviewRating.objects.filter(product_id=single_product.id, status=True)
+    # ================= REVIEWS =================
+    reviews = ReviewRating.objects.filter(product=single_product, status=True)
+
+    # ================= SIZE =================
     sizes = Size.objects.active()
+
+    # ================= AI RECOMMENDATION =================
+    recommended_products = []
+
+    if request.user.is_authenticated and model:
+        try:
+            user_id = str(request.user.id)
+            result = model(tf.constant([user_id]))
+
+            if isinstance(result, tuple):
+                _, items = result
+                product_ids = items.numpy().tolist()
+            else:
+                product_ids = result.numpy().tolist()
+
+            recommended_products = Product.objects.filter(id__in=product_ids)[:5]
+
+        except Exception as e:
+            print("AI error:", e)
+
+    # ================= SIMILAR PRODUCTS =================
+    similar_products = Product.objects.filter(
+    sub_category=single_product.sub_category,
+    is_available=True
+).exclude(id=single_product.id)[:10]
+
+    # ================= FREQUENTLY BOUGHT =================
+    frequently_bought = []
+
+    orders = OrderProduct.objects.filter(
+        product=single_product
+    ).values_list('order_id', flat=True)
+
+    related = OrderProduct.objects.filter(
+        order_id__in=orders
+    ).exclude(
+        product=single_product
+    ).values(
+        'product'
+    ).annotate(
+        count=Count('product')
+    ).order_by('-count')[:4]
+
+    ids = [item['product'] for item in related]
+
+    frequently_bought = Product.objects.filter(id__in=ids)
+
+    # ================= CONTEXT =================
     context = {
-        'single_product': single_product,
-        'in_cart': in_cart,
-        'orderproduct': orderproduct,
-        'reviews': reviews,
-        'sizes': sizes,
+        "single_product": single_product,
+        "in_cart": in_cart,
+        "orderproduct": orderproduct,
+        "reviews": reviews,
+        "sizes": sizes,
+        "recommended_products": recommended_products,
+        "similar_products": similar_products,
+        "frequently_bought": frequently_bought,
     }
-    return render(request, 'product_detail.html', context)
+
+    return render(request, "product_detail.html", context)
+
+
+# ================= REVIEW =================
+def submit_review(request, product_id):
+
+    url = request.META.get("HTTP_REFERER")
 
     try:
-        single_product = Product.objects.get(category__slug=category_slug, slug=product_slug)
-        in_cart = CartItem.objects.filter(cart__cart_id=_cart_id(request), product=single_product).exists()
-    except Exception as e:
-        raise e
+        reviews = ReviewRating.objects.get(
+            user=request.user,
+            product_id=product_id
+        )
 
-    if request.user.is_authenticated:
-        try:
-            orderproduct = OrderProduct.objects.filter(user=request.user, product_id=single_product.id).exists()
-        except OrderProduct.DoesNotExist:
-            orderproduct = None
-    else:
-        orderproduct = None
+        form = ReviewForm(request.POST, instance=reviews)
+        form.save()
+        messages.success(request, "Review updated")
 
-    # Get the reviews
-    reviews = ReviewRating.objects.filter(product_id=single_product.id, status=True)
+    except ReviewRating.DoesNotExist:
 
-    # Get the product gallery
- 
+        form = ReviewForm(request.POST)
 
-    context = {
-        'single_product': single_product,
-        'in_cart' : in_cart,
-        'orderproduct': orderproduct,
-        'reviews': reviews,
-    
-    }
-    return render(request, 'product_detail.html', context)
+        if form.is_valid():
+            data = form.save(commit=False)
+            data.user = request.user
+            data.product_id = product_id
+            data.save()
 
-def submit_review(request, product_id):
-    url = request.META.get('HTTP_REFERER')
-    if request.method == 'POST':
-        try:
-            reviews = ReviewRating.objects.get(user__id=request.user.id, product__id=product_id)
-            form = ReviewForm(request.POST, instance=reviews)
-            form.save()
-            messages.success(request, 'Thank you! Your review has been updated.')
-            return redirect(url)
-        except ReviewRating.DoesNotExist:
-            form = ReviewForm(request.POST)
-            if form.is_valid():
-                data = ReviewRating()
-                data.subject = form.cleaned_data['subject']
-                data.rating = form.cleaned_data['rating']
-                data.review = form.cleaned_data['review']
-                data.ip = request.META.get('REMOTE_ADDR')
-                data.product_id = product_id
-                data.user_id = request.user.id
-                data.save()
-                messages.success(request, 'Thank you! Your review has been submitted.')
-                return redirect(url)
+            messages.success(request, "Review submitted")
+
+    return redirect(url)
 
 
-
-
+# ================= CONTACT =================
 def contact_view(request):
+
     if request.method == "POST":
+
         email = request.POST.get("email")
         message = request.POST.get("msg")
 
         if email and message:
-            ContactMessage.objects.create(email=email, message=message)
-            messages.success(request, "Your message has been sent successfully!")
-            return redirect("contact")  # Redirect to same page after submit
+
+            ContactMessage.objects.create(
+                email=email,
+                message=message
+            )
+
+            messages.success(request, "Message sent")
 
         else:
-            messages.error(request, "Please fill in all fields.")
+            messages.error(request, "Fill all fields")
 
-    return render(request, "contact.html")  # your template name
+    return render(request, "contact.html")
+
+
+# ================= CATALOGUE =================
+def catalogue(request, category_slug=None, subcategory_slug=None):
+
+    products = Product.objects.filter(is_available=True)
+    links = Category.objects.prefetch_related('subcategories').all()
+
+    if category_slug:
+        category = get_object_or_404(Category, slug=category_slug)
+        subcats = SubCategory.objects.filter(category=category)
+        products = products.filter(category=category) | products.filter(sub_category__in=subcats)
+
+    if subcategory_slug:
+        subcategory = get_object_or_404(SubCategory, slug=subcategory_slug)
+        products = products.filter(sub_category=subcategory)
+
+    paginator = Paginator(products, 8)
+    page = request.GET.get("page")
+    paged_products = paginator.get_page(page)
+
+    context = {
+        "links": links,
+        "product": paged_products,
+        "product_count": products.count(),
+    }
+
+    return render(request, "catalogue.html", context)
+
+
+# ================= VIRTUAL TRY-ON =================
+
+from django.shortcuts import render, get_object_or_404
+from .models import Product
+
+
+# ================= VIRTUAL TRY-ON =================
+
+from django.shortcuts import render, get_object_or_404
+from .models import Product
+
+def virtual_tryon(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+
+    return render(request, "virtual_tryon.html", {
+        "product": product,
+    })

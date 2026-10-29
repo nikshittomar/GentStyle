@@ -167,7 +167,7 @@
 <div class="invoice-container">
   <div class="invoice-header">
     <div class="invoice-logo">
-      <img src="{% static 'images/logo.png' %}" alt="Invoice Logo">
+      <img src="{% static 'images/icons/Gent.png' %}" alt="Invoice Logo">
     </div>
     <div class="invoice-to">
       <strong>Invoiced To</strong>
@@ -217,15 +217,15 @@
     <tfoot>
       <tr>
         <th colspan="2" class="text-right">Sub Total:</th>
-        <th>${{subtotal}} USD</th>
+        <th>${{subtotal}} rupees</th>
       </tr>
       <tr>
         <th colspan="2" class="text-right">Tax:</th>
-        <th>${{order.tax}} USD</th>
+        <th>${{order.tax}} rupees</th>
       </tr>
       <tr>
         <th colspan="2" class="text-right">Grand Total:</th>
-        <th>${{order.order_total}} USD</th>
+        <th>${{order.order_total}} rupees</th>
       </tr>
     </tfoot>
   </table>

@@ -1,11 +1,12 @@
- {% load static %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Header Demo</title>
-  <!-- Google Font -->
+
+  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
   <link href="{% static 'images/slide-02.jpg' %}" rel="shortcut icon" type="image/jpeg">
@@ -15,25 +16,29 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
  
 <style>
-  *{
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: "Poppins", sans-serif;
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
   }
+
   body {
     margin: 0;
     font-family: 'Poppins', sans-serif;
   }
+
   header {
     width: 100%; 
     z-index: 999;
   }
+
   .container {
     max-width: 1150px;
     margin: 0 auto;
     padding: 0 10px;
   }
+
   .container-menu-desktop {
     display: flex;
     flex-direction: column;
@@ -42,7 +47,7 @@
     top: 0;
   }
 
-  /* Top bar */
+  /* Top Bar */
   .top-bar {
     color: #fff;
     background: #000;
@@ -54,11 +59,13 @@
     width: 100%;
     z-index: 1000;
   }
+
   .top-bar .content-topbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
+
   .right-top-bar a {
     text-decoration: none;
     color: #ffffff;
@@ -69,50 +76,66 @@
   /* Desktop Menu */
   .wrap-menu-desktop {
     position: fixed;
-    top: 40px;   /* offset = height of top-bar */
+    top: 40px; /* offset = height of top-bar */
     left: 0;
     width: 100%;
     background: transparent;
     z-index: 999;
     transition: background 0.3s, box-shadow 0.3s;
   }
+
   .limiter-menu-desktop {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 0;
+    padding: 8px 0;
   }
+
+  /* ✅ Fixed Logo Sizes */
   .logo img {
-    height: 20px;
+    height: 80px;   /* Perfect desktop size */
+    width: auto;
+    transition: height 0.3s ease;
   }
+
+  .wrap-menu-desktop.scrolled .logo img {
+    height: 50px;   /* Slightly smaller when scrolled */
+  }
+
   .main-menu {
     list-style: none;
     display: flex;
     margin-right: 223px;
     padding: 0;
   }
+
   .main-menu li {
     margin: 0 15px;
   }
+
   .main-menu a {
     text-decoration: none;
     font-weight: 500;
     color: #333;
     transition: 0.3s;
   }
+
   .main-menu a:hover {
     color: #ff6f61;
   }
+
   .wrap-icon-header {
     display: flex;
     align-items: center;
   }
+
   .icon-header-item {
     font-size: 22px;
     margin: 0 5px;
     cursor: pointer;
     position: relative;
   }
+
   .icon-header-noti::after {
     content: attr(data-notify);
     position: absolute;
@@ -130,6 +153,7 @@
     background: #fff;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   }
+
   .wrap-menu-desktop.scrolled .main-menu a,
   .wrap-menu-desktop.scrolled .wrap-icon-header i {
     color: #333;
@@ -152,18 +176,24 @@
     border-bottom: 1px solid #eee;
     background: #fff;
   }
+
+  /* ✅ Increased Mobile Logo Size */
   .logo-mobile img {
-    height: 15px;
+    height: 50px;   /* Larger than before */
+    width: auto;
   }
+
   .right-icons {
     display: flex;
     align-items: center;
     gap: 15px;
   }
+
   .btn-show-menu-mobile {
     font-size: 24px;
     cursor: pointer;
   }
+
   .menu-mobile {
     display: none;
     background: #fff;
@@ -174,11 +204,13 @@
     top: 70px; /* below mobile header */
     z-index: 999;
   }
+
   .menu-mobile ul {
     list-style: none;
     padding: 0;
     margin: 0;
   }
+
   .menu-mobile a {
     display: block;
     text-decoration: none;
@@ -187,23 +219,25 @@
     font-weight: 500;
     border-bottom: 1px solid #f1f1f1;
   }
-   @media(max-width: 1025px){
-    .limiter-menu-desktop{
-      padding:15px 40px;
+
+  @media(max-width: 1160px) {
+    .limiter-menu-desktop {
+      padding: 15px 40px;
     }
-   }
+  }
+
   /* Responsive */
   @media (max-width: 786px) {
     .container-menu-desktop { display: none; }
-    .mob{
+    .mob {
       position: relative;
       width: 100vw;
-      
     }
-    .wrap-header-mobile { display: flex;
-    position: fixed;
-       width: 100%;
-       top:0;
+    .wrap-header-mobile { 
+      display: flex;
+      position: fixed;
+      width: 100%;
+      top: 0;
     }
   }
 
@@ -214,55 +248,113 @@
     padding: 10px 15px;
     display: none;
   }
+
   .mobile-top-bar .container {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
     font-size: 14px;
   }
+
   .mobile-left { color: #ddd; }
+
   .mobile-top-bar .right-top-bar {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
   }
+
   .mobile-top-bar .right-top-bar span,
   .mobile-top-bar .right-top-bar a {
     color: #ddd;
     transition: 0.3s;
   }
+
   .mobile-top-bar .right-top-bar a:hover,
   .mobile-top-bar .right-top-bar span:hover {
     color: #ff6600;
     cursor: pointer;
   }
 
-  /* Footer (unchanged) */
+  /* Footer */
   footer {
     background: #222;
     color: #fff;
     padding: 60px 20px;
   }
+
   footer h4 {
     font-family: 'PlayfairDisplay-Bold';  
     font-size: 18px;
     margin-bottom: 20px;
   }
+
   footer a { color: #bbb; text-decoration: none; transition: 0.3s; }
   footer a:hover { color: #fff; }
   footer ul { list-style: none; padding: 0; margin: 0; }
   footer ul li { margin-bottom: 10px; }
   footer p { color: #bbb; font-size: 14px; line-height: 1.6; }
-  .footer-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 40px; max-width: 1200px; margin: 0 auto; }
-  .social-icons a { font-size: 18px; margin-right: 15px; color: #bbb; }
+
+  .footer-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .social-icons a {
+    font-size: 18px;
+    margin-right: 15px;
+    color: #bbb;
+  }
+
   .social-icons a:hover { color: #fff; }
-  .newsletter input { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 5px; border: none; outline: none; }
-  .newsletter button { padding: 10px 20px; border: none; border-radius: 5px; background: #ff6f61; color: #fff; cursor: pointer; transition: 0.3s; }
-  .newsletter button:hover { background: #ff4b3c; }
-  .payment-icons { margin-top: 30px; display: flex; flex-wrap: wrap; gap: 10px; }
-  .payment-icons img { width: 50px; height: auto; }
-  @media(max-width: 768px) { footer { padding: 40px 15px; } .footer-container { grid-template-columns: 1fr 1fr; gap: 20px; } .payment-icons { justify-content: center; } }
-  @media(max-width: 480px) { .footer-container { grid-template-columns: 1fr; } }
+
+  .newsletter input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: none;
+    outline: none;
+  }
+
+  .newsletter button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background: #ff6f61;
+    color: #fff;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  .newsletter button:hover {
+    background: #ff4b3c;
+  }
+
+  .payment-icons {
+    margin-top: 30px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .payment-icons img {
+    width: 50px;
+    height: auto;
+  }
+
+  @media(max-width: 768px) {
+    footer { padding: 40px 15px; }
+    .footer-container { grid-template-columns: 1fr 1fr; gap: 20px; }
+    .payment-icons { justify-content: center; }
+  }
+
+  @media(max-width: 480px) {
+    .footer-container { grid-template-columns: 1fr; }
+  }
 </style>
 </head>
 <body>
@@ -272,7 +364,7 @@
   <div class="container-menu-desktop">
     <div class="top-bar">
       <div class="content-topbar container">
-        <div class="left-top-bar">Free shipping for standard order over $100</div>
+        <div class="left-top-bar">Free shipping for standard order over ₹10000</div>
         <div class="right-top-bar">
           {% if user.is_authenticated %}
             <a href="#">Welcome {{ user.first_name }}</a>
@@ -289,7 +381,7 @@
 
     <div class="wrap-menu-desktop">
       <nav class="limiter-menu-desktop container">
-        <a href="#"><img src="{% static 'images/icons/logo-01.png' %}" alt="IMG-LOGO"></a>
+        <a href="#" class="logo"><img src="{% static 'images/icons/Gent.png' %}" alt="IMG-LOGO"></a>
         <div class="menu-desktop">
           <ul class="main-menu">
             <li><a href="{% url 'home' %}">Home</a></li>
@@ -300,7 +392,6 @@
         </div>
         <div class="wrap-icon-header">
           <div class="icon-header-item icon-header-noti js-show-cart" onclick="window.location.href='{% url 'cart' %}'" data-notify="2"><i class="fa-solid fa-cart-shopping"></i></div>
-          <a href="#" class="icon-header-item icon-header-noti" data-notify="0"><i class="fa-solid fa-heart"></i></a>
         </div>
       </nav>
     </div>  
@@ -310,15 +401,13 @@
   <div class="mob">
     <div class="wrap-header-mobile">
       <div class="logo-mobile">
-        <a href="#"><img src="{% static 'images/icons/logo-01.png' %}" alt="IMG-LOGO"></a>
+        <a href="#"><img src="{% static 'images/icons/Gent.png' %}" alt="IMG-LOGO"></a>
       </div>
       <div class="right-icons">
         <div class="icon-header-item icon-header-noti js-show-cart" onclick="window.location.href='{% url 'cart' %}'" data-notify="2">
           <i class="fa-solid fa-cart-shopping"></i>
         </div>
-        <a href="#" class="icon-header-item icon-header-noti" data-notify="0">
-          <i class="fa-solid fa-heart"></i>
-        </a>
+        
         <div class="btn-show-menu-mobile">
           <i class="fa fa-bars fa-lg"></i>
         </div>
@@ -333,7 +422,7 @@
         <li><a href="{% url 'contact' %}">Contact</a></li>
         {% if user.is_authenticated %}
           <li><a href="#">Welcome {{ user.first_name }}</a></li>
-          <li><a href="{% url 'dashboard' %}">Dashboard</a>
+          <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
           <li><a href="{% url 'logout' %}">Logout</a></li>
         {% else %}
           <li><a href="#">Welcome Guest</a></li>

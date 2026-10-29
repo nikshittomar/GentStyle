@@ -9,7 +9,7 @@ from Category.models import Category,SubCategory
 # Create your models here.
 class Product(models.Model):
     product_name = models.CharField(max_length=200,unique=True)
-    slug=models.SlugField(max_length=200, unique=True)
+    slug = models.SlugField(max_length=200, unique=True)
     product_description= models.TextField(max_length=500, blank=True)
     price = models.IntegerField()
     image = models.ImageField(upload_to='photos/products')
@@ -26,6 +26,15 @@ class Product(models.Model):
 
     def __str__(self):
         return self.product_name
+
+class Interaction(models.Model):
+    user = models.ForeignKey(Account, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    action = models.CharField(max_length=50)  # view, click, purchase
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user} - {self.product} - {self.action}"
 
 class SizeManager(models.Manager):
     def active(self):

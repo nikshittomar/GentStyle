@@ -152,7 +152,6 @@ def cart(request):
     }
     return render(request, 'cart.html', context)
 
-
 def search(request):
     products = []
     product_count = 0

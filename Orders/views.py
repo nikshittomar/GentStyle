@@ -18,8 +18,83 @@ from jjcollection.settings import RAZORPAY_KEY_ID
 from django.views.decorators.csrf import csrf_exempt
 import razorpay
 
+
 @csrf_exempt
 def razorpay_payment(request):
+
+    if request.method == "POST":
+        data = json.loads(request.body)
+
+        client = razorpay.Client(
+            auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET)
+        )
+
+        try:
+            # ✅ VERIFY PAYMENT SIGNATURE
+            client.utility.verify_payment_signature({
+                "razorpay_order_id": data["razorpay_order_id"],
+                "razorpay_payment_id": data["razorpay_payment_id"],
+                "razorpay_signature": data["razorpay_signature"],
+            })
+
+        except Exception as e:
+            print("Verification Error:", e)
+            return JsonResponse({"status": "failure"}, status=400)
+
+        # ✅ GET ORDER (IMPORTANT FIX)
+        order = Order.objects.get(order_number=data["order_number"])
+        user = order.user
+
+        # ✅ CREATE PAYMENT
+        payment = Payment.objects.create(
+            user=user,
+            payment_id=data["razorpay_payment_id"],
+            payment_method="Razorpay",
+            amount_paid=order.order_total,
+            status="COMPLETED",
+        )
+
+        # ✅ UPDATE ORDER
+        order.payment = payment
+        order.is_ordered = True
+        order.save()
+
+        # ✅ MOVE CART ITEMS
+        cart_items = CartItem.objects.filter(user=user)
+
+        for item in cart_items:
+            orderproduct = OrderProduct.objects.create(
+                order=order,
+                payment=payment,
+                user=user,
+                product=item.product,
+                quantity=item.quantity,
+                product_price=item.product.price,
+                ordered=True,
+            )
+
+            # Reduce stock
+            product = Product.objects.get(id=item.product.id)
+            product.stock -= item.quantity
+            product.save()
+
+        # ✅ CLEAR CART
+        CartItem.objects.filter(user=user).delete()
+
+        # ✅ SEND EMAIL
+        mail_subject = "Thank you for your order!"
+        message = render_to_string("order_recieved_email.html", {
+            "user": user,
+            "order": order,
+        })
+        EmailMessage(mail_subject, message, to=[user.email]).send()
+
+        # ✅ RETURN SUCCESS RESPONSE
+        return JsonResponse({
+            "status": "success",
+            "order_number": order.order_number,
+            "payment_id": payment.payment_id
+        })
     if request.method == "POST":
         data = json.loads(request.body)
         client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
@@ -35,7 +110,7 @@ def razorpay_payment(request):
             return JsonResponse({"status": "failure"}, status=400)
 
         # Get order object using order_number from frontend
-        order = Order.objects.get(user=request.user, is_ordered=False, order_number=data["order_number"])
+        order = Order.objects.get(order_number=data["order_number"], is_ordered=True)
 
         # Save payment details
         payment = Payment.objects.create(
@@ -197,18 +272,24 @@ def payments(request):
     return render(request, "payments.html", context)
 
 def order_complete(request):
+
     order_number = request.GET.get('order_number')
     payment_id = request.GET.get('payment_id')
 
     try:
-        order = get_object_or_404(Order, order_number=order_number, is_ordered=True)
-        payment = get_object_or_404(Payment, payment_id=payment_id)
+        # ✅ Get order (no strict is_ordered check)
+        order = get_object_or_404(Order, order_number=order_number)
+
+        # ✅ Safer payment fetch
+        payment = Payment.objects.filter(payment_id=payment_id).first()
+
+        # ✅ Get ordered products
         ordered_products = OrderProduct.objects.filter(order=order)
 
         subtotal = 0
-        # ✅ Calculate total_price for each item
+
         for item in ordered_products:
-            item.total_price = item.product_price * item.quantity  # calculate total for each product
+            item.total_price = item.product_price * item.quantity
             subtotal += item.total_price
 
         context = {
@@ -219,6 +300,9 @@ def order_complete(request):
             'order_number': order_number,
             'payment_id': payment_id,
         }
+
         return render(request, 'order_complete.html', context)
-    except (Order.DoesNotExist, Payment.DoesNotExist):
+
+    except Exception as e:
+        print("Order Complete Error:", e)
         return redirect('home')

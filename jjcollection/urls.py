@@ -24,13 +24,12 @@ from jjcollection.views import *
 urlpatterns = [
     path('securelogin/', admin.site.urls),
     path('home/',home, name="home"),
-    path('catalogue/', catalogue, name='catalogue'),
     path('store/', include('Store.urls')),
     path('cart/', include('Carts.urls')),
     path('accounts/', include('Accounts.urls')),
     path('orders/', include('Orders.urls')),
     # put this at the end, or add a prefix like 'category/'
-    path('category/<slug:category_slug>/', store, name='products_by_category'),
+  
     
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

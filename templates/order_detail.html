@@ -218,7 +218,7 @@
         </td>
         <td>{{ item.quantity }}</td>
         <td class="text-center">
-    ${{ item.product_price|floatformat:2 }} × {{ item.quantity }} = ${{ item.total_price|floatformat:2 }} USD
+    ${{ item.product_price|floatformat:2 }} × {{ item.quantity }} = ₹{{ item.total_price|floatformat:2 }} USD
 </td>
       </tr>
       {% endfor %}
@@ -226,15 +226,15 @@
     <tfoot>
       <tr>
         <th colspan="2" class="text-right">Sub Total:</th>
-        <th>${{ subtotal|floatformat:2 }} USD</th>
+        <th>₹{{ subtotal|floatformat:2 }} rupees</th>
       </tr>
       <tr>
         <th colspan="2" class="text-right">Tax:</th>
-        <th>${{ order.tax|floatformat:2 }} USD</th>
+        <th>₹{{ order.tax|floatformat:2 }} rupees </th>
       </tr>
       <tr>
         <th colspan="2" class="text-right">Grand Total:</th>
-        <th>${{ order.order_total|floatformat:2 }} USD</th>
+        <th>₹{{ order.order_total|floatformat:2 }} rupees</th>
       </tr>
     </tfoot>
   </table>

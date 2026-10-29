@@ -487,7 +487,7 @@ p{
                         </div>
                       </div>
                     </td>
-                    <td>${{ item.product.price }}</td>
+                    <td>₹{{ item.product.price }}</td>
                     <td>
                       <div class="quantity-controls">
                         <a href="{% url 'remove_cart' item.product.id %}?size={{ item.size.id }}" class="qty-btn">-</a>
@@ -539,9 +539,9 @@ p{
         <div class="totals-section">
           <div class="totals-card">
             <h3>Cart Totals</h3>
-            <div class="total-row"><span>Subtotal:</span><span>${{ total }}</span></div>
+            <div class="total-row"><span>Subtotal:</span><span>₹{{ total }}</span></div>
             <div class="total-row"><span>Tax:</span><span>{{ tax }}</span></div>
-            <div class="total-row total-final"><span>Total:</span><span>${{ grand_total }}</span></div>
+            <div class="total-row total-final"><span>Total:</span><span>₹{{ grand_total }}</span></div>
             <a href="{% url 'checkout' %}" class="btn">Proceed to Checkout</a>
           </div>
         </div>

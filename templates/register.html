@@ -1,168 +1,168 @@
-{% extends 'basee.html' %}
-{% load static %}
-{% block content %}
+    {% extends 'basee.html' %}
+    {% load static %}
+    {% block content %}
 
-<style>
-  .register-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 80vh;
-    padding: 40px 20px;
-  }
+    <style>
+      .register-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 80vh;
+        padding: 40px 20px;
+      }
 
-  .register-card {
-    width: 100%;
-    max-width: 500px;
-    background: rgba(237, 228, 228, 0.05);
-    border: 2px solid rgba(0, 0, 0, 0.95);
-    backdrop-filter: blur(15px);
-    padding: 40px;
-    border-radius: 20px;
-    box-shadow: 0 0 20px rgba(255,255,255,0.1);
-    text-align: center;
-    transition: all 0.3s ease;
-    margin-top: 120px;
-  }
+      .register-card {
+        width: 100%;
+        max-width: 500px;
+        background: rgba(237, 228, 228, 0.05);
+        border: 2px solid rgba(0, 0, 0, 0.95);
+        backdrop-filter: blur(15px);
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 0 20px rgba(255,255,255,0.1);
+        text-align: center;
+        transition: all 0.3s ease;
+        margin-top: 120px;
+      }
 
-  .register-card:hover {
-    box-shadow: 0 0 30px rgba(255,255,255,0.3);
-    transform: translateY(-3px);
-  }
+      .register-card:hover {
+        box-shadow: 0 0 30px rgba(255,255,255,0.3);
+        transform: translateY(-3px);
+      }
 
-  .register-card h2 {
-    font-weight: 700;
-    margin-bottom: 25px;
-    letter-spacing: 1px;
-    color: #000;
-  }
+      .register-card h2 {
+        font-weight: 700;
+        margin-bottom: 25px;
+        letter-spacing: 1px;
+        color: #000;
+      }
 
-  .form-group {
-    margin-bottom: 20px;
-    text-align: left;
-  }
-  .form-group label{
-	font-weight:800;
-  }
+      .form-group {
+        margin-bottom: 20px;
+        text-align: left;
+      }
+      .form-group label{
+      font-weight:800;
+      }
 
-  .form-control {
-    width: 100%;
-    padding: 12px 15px;
-    border-radius: 25px;
-    border: 2px solid #000;
-    background: transparent;
-    color: #000;
-    font-size: 15px;
-    outline: none;
-    transition: 0.3s ease;
-  }
+      .form-control {
+        width: 100%;
+        padding: 12px 15px;
+        border-radius: 25px;
+        border: 2px solid #000;
+        background: transparent;
+        color: #000;
+        font-size: 15px;
+        outline: none;
+        transition: 0.3s ease;
+      }
 
-  .form-control:focus {
-    border-color: #555;
-    background: rgba(0,0,0,0.05);
-  }
+      .form-control:focus {
+        border-color: #555;
+        background: rgba(0,0,0,0.05);
+      }
 
-  .btn {
-    width: 100%;
-    padding: 12px;
-    border: none;
-    border-radius: 25px;
-    background: #000;
-    color: #fff;
-    font-weight: 700;
-    cursor: pointer;
-    transition: 0.3s ease;
-  }
+      .btn {
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 25px;
+        background: #000;
+        color: #fff;
+        font-weight: 700;
+        cursor: pointer;
+        transition: 0.3s ease;
+      }
 
-  .btn:hover {
-    background: #fff;
-    color: #000;
-    border: 2px solid #000;
-  }
+      .btn:hover {
+        background: #fff;
+        color: #000;
+        border: 2px solid #000;
+      }
 
-  .login-link {
-    margin-top: 20px;
-    color: #333;
-    font-size: 14px;
-  }
+      .login-link {
+        margin-top: 20px;
+        color: #333;
+        font-size: 14px;
+      }
 
-  .login-link a {
-    color: #000;
-    font-weight: 600;
-    text-decoration: none;
-    transition: 0.3s;
-  }
+      .login-link a {
+        color: #000;
+        font-weight: 600;
+        text-decoration: none;
+        transition: 0.3s;
+      }
 
-  .login-link a:hover {
-    text-decoration: underline;
-  }
+      .login-link a:hover {
+        text-decoration: underline;
+      }
 
-  @media (max-width: 768px) {
-    .register-card {
-      padding: 30px 20px;  
-      margin-top: 5px;
-    }
-  }
+      @media (max-width: 768px) {
+        .register-card {
+          padding: 30px 20px;  
+          margin-top: 5px;
+        }
+      }
 
-  @media (max-width: 480px) {
-    .register-card {
-      padding: 30px 20px;  
-      margin-top: 5px;
-    }
-    .register-card h2 {
-      font-size: 22px;
-    }
-  }
-</style>
+      @media (max-width: 480px) {
+        .register-card {
+          padding: 30px 20px;  
+          margin-top: 5px;
+        }
+        .register-card h2 {
+          font-size: 22px;
+        }
+      }
+    </style>
 
-<div class="register-wrapper">
-  <div class="register-card">
-    {% include 'alerts.html' %}
-    <h2>Sign Up</h2>
+    <div class="register-wrapper">
+      <div class="register-card">
+        {% include 'alerts.html' %}
+        <h2>Sign Up</h2>
 
-    <form action="{% url 'register' %}" method="POST">
-      {% csrf_token %}
-      
-      <div class="form-group">
-        <label>First Name</label>
-        {{ form.first_name }}
+        <form action="{% url 'register' %}" method="POST">
+          {% csrf_token %}
+          
+          <div class="form-group">
+            <label>First Name</label>
+            {{ form.first_name }}
+          </div>
+
+          <div class="form-group">
+            <label>Last Name</label>
+            {{ form.last_name }}
+          </div>
+
+          <div class="form-group">
+            <label>Email</label>
+            {{ form.email }}
+          </div>
+
+          <div class="form-group">
+            <label>Phone Number</label>
+            {{ form.phone_number }}
+          </div>
+
+          <div class="form-group">
+            <label>Create Password</label>
+            {{ form.password }}
+          </div>
+
+          <div class="form-group">
+            <label>Repeat Password</label>
+            {{ form.confirm_password }}
+          </div>
+
+          <button type="submit" class="btn">Register</button>
+
+          <div class="text-danger mt-2">
+            {{ form.email.errors }}
+            {{ form.non_field_errors }}
+          </div>
+        </form>
+
+        <p class="login-link">Have an account? <a href="{% url 'login' %}">Log In</a></p>
       </div>
+    </div>
 
-      <div class="form-group">
-        <label>Last Name</label>
-        {{ form.last_name }}
-      </div>
-
-      <div class="form-group">
-        <label>Email</label>
-        {{ form.email }}
-      </div>
-
-      <div class="form-group">
-        <label>Phone Number</label>
-        {{ form.phone_number }}
-      </div>
-
-      <div class="form-group">
-        <label>Create Password</label>
-        {{ form.password }}
-      </div>
-
-      <div class="form-group">
-        <label>Repeat Password</label>
-        {{ form.confirm_password }}
-      </div>
-
-      <button type="submit" class="btn">Register</button>
-
-      <div class="text-danger mt-2">
-        {{ form.email.errors }}
-        {{ form.non_field_errors }}
-      </div>
-    </form>
-
-    <p class="login-link">Have an account? <a href="{% url 'login' %}">Log In</a></p>
-  </div>
-</div>
-
-{% endblock %}
+    {% endblock %}
